@@ -3,10 +3,11 @@ let containerId = "game"
 let backgroundLoaded = false
 let shipLoaded = false
 const gameConfig = {
-    movementUnit: 10
+    movementUnit: 5
 }
 const gameState = {
-    shipLocation: {x: 100, y: 100}
+    shipLocation: {x: 100, y: 100},
+    spaceLocation: {x : -500, y: -500}
 }
 
 function dealWithKeyboard(e) {
@@ -14,25 +15,37 @@ function dealWithKeyboard(e) {
     const { movementUnit } = gameConfig
 
 
-    if(type === 'keyup' && key === 'ArrowRight') {
+    if(type === 'keydown' && key === 'ArrowRight') {
         gameState.shipLocation.x = gameState.shipLocation.x + movementUnit
+        gameState.spaceLocation.x = gameState.spaceLocation.x + (movementUnit / 2)
+        // request = window.requestAnimationFrame(run);
+        e.preventDefault()
         return
     }
-    if(type === 'keyup' && key === 'ArrowLeft') {
+    if(type === 'keydown' && key === 'ArrowLeft') {
         gameState.shipLocation.x = gameState.shipLocation.x - movementUnit
+        gameState.spaceLocation.x = gameState.spaceLocation.x - (movementUnit / 2)
+        // request = window.requestAnimationFrame(run);
+        e.preventDefault()
         return
     }
-    if(type === 'keyup' && key === 'ArrowUp') {
+    if(type === 'keydown' && key === 'ArrowUp') {
         gameState.shipLocation.y = gameState.shipLocation.y - movementUnit
+        gameState.spaceLocation.y = gameState.spaceLocation.y - (movementUnit / 2)
+        // request = window.requestAnimationFrame(run);
+        e.preventDefault()
         return
     }
-    if(type === 'keyup' && key === 'ArrowDown') {
+    if(type === 'keydown' && key === 'ArrowDown') {
         gameState.shipLocation.y = gameState.shipLocation.y + movementUnit
+        gameState.spaceLocation.y = gameState.spaceLocation.y + (movementUnit / 2)
+        // request = window.requestAnimationFrame(run);
+        e.preventDefault()
         return
     }
 
     e.preventDefault()
-    console.log(`${type} detected on key ${key}`)
+    // console.log(`${type} detected on key ${key}`)
 }
 
 
@@ -44,7 +57,7 @@ window.addEventListener("keyup", dealWithKeyboard, false);
     const height = 600
 
     const ship = document.images[0]
-    const space = document.images[1]
+    const space = document.images[2]
 
     let body = document.getElementById(containerId)
     let canvas = document.createElement("canvas")
@@ -84,10 +97,10 @@ function run() {
         return
 
     }
-    console.log('Game tick')
-    console.log(gameState)
-    ctx.drawImage(gameObjects.space, 0, 0)
-    ctx.drawImage(gameObjects.ship, gameState.shipLocation.x, gameState.shipLocation.y)
+    // console.log('Game tick')
+    // console.log(gameState)
+    ctx.drawImage(gameObjects.space, gameState.spaceLocation.x, gameState.spaceLocation.y, gameObjects.space.width / 2, gameObjects.space.height / 2)
+    ctx.drawImage(gameObjects.ship, gameState.shipLocation.x, gameState.shipLocation.y, gameObjects.ship.width /2, gameObjects.ship.height / 2)
     request = window.requestAnimationFrame(run);
 
 }
