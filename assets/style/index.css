@@ -1,16 +1,12 @@
-#game {
-    /* position: relative; */
-}
-
 #loadingScreen {
     padding-left: 3em;
     padding-top: 3em;
     color: aliceblue;
     width: 800px;
     height: 600px;
-    /* background-color: black; */
-    /* top: 0px; */
-    /* position: fixed; */
+    background-color: black;
+    top: 0px;
+    position: fixed;
 
 }
 
@@ -28,14 +24,14 @@
 }
 
 #sprites {
-    /* position: absolute; */
-    /* top: -9999px; */
-    /* left: -9999px; */
-    /* float: left; */
-    /* display: block; */
-    /* height: 0px; */
-    /* width: 0px; */
-    /* overflow: hidden; */
-    /* visibility: hidden; */
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+    float: left;
+    display: block;
+    height: 0px;
+    width: 0px;
+    overflow: hidden;
+    visibility: hidden;
 }
 

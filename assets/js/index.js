@@ -21,7 +21,7 @@ function isGameLoaded() {
         return false
       }
     if (gameState.backgroundLoaded && gameState.shipLoaded) {
-        // document.getElementById("loadingScreen").style.visibility = 'hidden'
+        document.getElementById("loadingScreen").style.visibility = 'hidden'
         gameState.loaded = true
         return true
     }
