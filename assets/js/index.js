@@ -104,14 +104,7 @@ function handleKeys() {
   }
 }
 
-function run() {
-  if (!isGameLoaded()) {
-    gameState.frameRequest = window.requestAnimationFrame(run)
-    return
-  }
-
-  handleKeys()
-
+function drawSpace() {
   const { ctx } = gameState
   ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
   ctx.drawImage(
@@ -121,6 +114,10 @@ function run() {
     gameObjects.space.width / 2,
     gameObjects.space.height / 2
   )
+}
+
+function drawShip() {
+  const { ctx } = gameState
   ctx.drawImage(
     gameObjects.ship,
     gameState.shipLocation.x,
@@ -128,6 +125,18 @@ function run() {
     gameObjects.ship.width / 2,
     gameObjects.ship.height / 2
   )
+}
+
+function run() {
+  if (!isGameLoaded()) {
+    gameState.frameRequest = window.requestAnimationFrame(run)
+    return
+  }
+
+  handleKeys()
+  drawSpace()
+  drawShip()
+
   gameState.missiles.forEach(missile => {
     moveMissile(missile)
   })
