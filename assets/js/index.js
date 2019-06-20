@@ -13,34 +13,34 @@ const gameState = {
   missiles: [],
   frameRequest: 0,
   shipLoaded: false,
-  spaceLoaded: false
+  spaceLoaded: false,
+  keys: [],
 }
 
 function isGameLoaded() {
-    if (gameObjects === {}) {
-        console.error(`Empty gameObject in gameLoop`)
-        gameState.frameRequest = window.requestAnimationFrame(run)
-        return false
-      }
-    if (gameState.spaceLoaded && gameState.shipLoaded) {
-        document.getElementById("loadingScreen").style.visibility = 'hidden'
-        gameState.loaded = true
-        return true
-    }
+  if (gameObjects === {}) {
+    console.error(`Empty gameObject in gameLoop`)
+    gameState.frameRequest = window.requestAnimationFrame(run)
     return false
+  }
+  if (gameState.spaceLoaded && gameState.shipLoaded) {
+    document.getElementById('loadingScreen').style.visibility = 'hidden'
+    gameState.loaded = true
+    return true
+  }
+  return false
 }
 
 function removeMissile(missile) {
-    gameState.missiles = gameState.missiles.filter(missile => {
-        return missile.x !== gameState.shipLocation.x
-      })
+  gameState.missiles = gameState.missiles.filter(missile => {
+    return missile.x !== gameState.shipLocation.x
+  })
 }
 
 function moveMissile(missile) {
-    if (missile.y <= 0) {
-        
-    }
-    missile.y = missile.y - 5
+  if (missile.y <= 0) {
+  }
+  missile.y = missile.y - 5
 }
 
 // [{ x: number, y: number }]
@@ -58,46 +58,50 @@ function drawMissile(missile) {
 
 function moveLeft(params) {}
 
-function dealWithKeyboard(e) {
-  const { type, key, code } = e
+function keysPressed(e) {
+  console.log(e.code)
+  switch (e.code) {
+    case 'ArrowUp':
+    case 'ArrowDown':
+    case 'ArrowLeft':
+    case 'ArrowRight':
+    case 'Space':
+      e.preventDefault()
+      break
+  }
+  gameState.keys[e.code] = true
+}
+
+function keysReleased(e) {
+  gameState.keys[e.code] = false
+}
+
+function handleKeys() {
   const { movementUnit } = gameConfig
 
-  if (type === 'keydown' && key === 'ArrowRight') {
+  if (gameState.keys['ArrowRight']) {
     gameState.shipLocation.x = gameState.shipLocation.x + movementUnit
     gameState.spaceLocation.x = gameState.spaceLocation.x + movementUnit / 2
-    e.preventDefault()
-    return
   }
-  if (type === 'keydown' && key === 'ArrowLeft') {
+  if (gameState.keys['ArrowLeft']) {
     gameState.shipLocation.x = gameState.shipLocation.x - movementUnit
     gameState.spaceLocation.x = gameState.spaceLocation.x - movementUnit / 2
-    e.preventDefault()
-    return
   }
-  if (type === 'keydown' && key === 'ArrowUp') {
+  if (gameState.keys['ArrowUp']) {
     gameState.shipLocation.y = gameState.shipLocation.y - movementUnit
     gameState.spaceLocation.y = gameState.spaceLocation.y - movementUnit / 2
-    e.preventDefault()
-    return
   }
-  if (type === 'keydown' && key === 'ArrowDown') {
+  if (gameState.keys['ArrowDown']) {
     gameState.shipLocation.y = gameState.shipLocation.y + movementUnit
     gameState.spaceLocation.y = gameState.spaceLocation.y + movementUnit / 2
-    e.preventDefault()
-    return
   }
 
-  if (type === 'keyup' && code === 'Space') {
+  if (gameState.keys['Space']) {
     gameState.missiles.push({
       x: gameState.shipLocation.x,
       y: gameState.shipLocation.y,
     })
-    e.preventDefault()
-    return
   }
-
-  e.preventDefault()
-  // console.log(`${type} detected on key (${key}) / (${code})`)
 }
 
 function run() {
@@ -105,6 +109,8 @@ function run() {
     gameState.frameRequest = window.requestAnimationFrame(run)
     return
   }
+
+  handleKeys()
 
   const { ctx } = gameState
   ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
@@ -132,20 +138,19 @@ function run() {
 }
 
 function init() {
-  window.addEventListener('keydown', dealWithKeyboard, false)
-  window.addEventListener('keypress', dealWithKeyboard, false)
-  window.addEventListener('keyup', dealWithKeyboard, false)
+  window.addEventListener('keydown', keysPressed, false)
+  window.addEventListener('keyup', keysReleased, false)
 
   const ship = document.images[0]
   const space = document.images[2]
 
   let body = document.getElementById(containerId)
-  let canvas = document.createElement("canvas")
-  canvas.setAttribute("id", "gameCanvas")
-  canvas.setAttribute("width", 800)
-  canvas.setAttribute("height", 600)
+  let canvas = document.createElement('canvas')
+  canvas.setAttribute('id', 'gameCanvas')
+  canvas.setAttribute('width', 800)
+  canvas.setAttribute('height', 600)
   body.appendChild(canvas)
-  
+
   gameState.ctx = canvas.getContext('2d')
 
   space.onload = function() {
