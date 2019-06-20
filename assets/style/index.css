@@ -1,3 +1,41 @@
-#sprites img {
-    visibility: hidden;
+#game {
+    /* position: relative; */
 }
+
+#loadingScreen {
+    padding-left: 3em;
+    padding-top: 3em;
+    color: aliceblue;
+    width: 800px;
+    height: 600px;
+    /* background-color: black; */
+    /* top: 0px; */
+    /* position: fixed; */
+
+}
+
+#loadingScreen div { 
+    text-align: center;
+    margin: auto;
+    width: 50%;
+
+}
+
+#loadingScreen img {
+    width: 200px;
+    left: 400px;
+    margin: auto;
+}
+
+#sprites {
+    /* position: absolute; */
+    /* top: -9999px; */
+    /* left: -9999px; */
+    /* float: left; */
+    /* display: block; */
+    /* height: 0px; */
+    /* width: 0px; */
+    /* overflow: hidden; */
+    /* visibility: hidden; */
+}
+
