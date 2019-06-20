@@ -12,6 +12,8 @@ const gameState = {
   spaceLocation: { x: -500, y: -500 },
   missiles: [],
   frameRequest: 0,
+  shipLoaded: false,
+  backgroundLoaded: false
 }
 
 function isGameLoaded() {
