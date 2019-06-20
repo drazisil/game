@@ -13,7 +13,7 @@ const gameState = {
   missiles: [],
   frameRequest: 0,
   shipLoaded: false,
-  backgroundLoaded: false
+  spaceLoaded: false
 }
 
 function isGameLoaded() {
@@ -22,12 +22,25 @@ function isGameLoaded() {
         gameState.frameRequest = window.requestAnimationFrame(run)
         return false
       }
-    if (gameState.backgroundLoaded && gameState.shipLoaded) {
+    if (gameState.spaceLoaded && gameState.shipLoaded) {
         document.getElementById("loadingScreen").style.visibility = 'hidden'
         gameState.loaded = true
         return true
     }
     return false
+}
+
+function removeMissile(missile) {
+    gameState.missiles = gameState.missiles.filter(missile => {
+        return missile.x !== gameState.shipLocation.x
+      })
+}
+
+function moveMissile(missile) {
+    if (missile.y <= 0) {
+        
+    }
+    missile.y = missile.y - 5
 }
 
 // [{ x: number, y: number }]
@@ -74,18 +87,10 @@ function dealWithKeyboard(e) {
     return
   }
 
-  if (type === 'keydown' && code === 'Space') {
+  if (type === 'keyup' && code === 'Space') {
     gameState.missiles.push({
       x: gameState.shipLocation.x,
       y: gameState.shipLocation.y,
-    })
-    e.preventDefault()
-    return
-  }
-
-  if (type === 'keyup' && code === 'Space') {
-    gameState.missiles = gameState.missiles.filter(missile => {
-      return missile.x !== gameState.shipLocation.x
     })
     e.preventDefault()
     return
@@ -118,6 +123,9 @@ function run() {
     gameObjects.ship.height / 2
   )
   gameState.missiles.forEach(missile => {
+    moveMissile(missile)
+  })
+  gameState.missiles.forEach(missile => {
     drawMissile(missile)
   })
   gameState.frameRequest = window.requestAnimationFrame(run)
@@ -141,14 +149,10 @@ function init() {
   gameState.ctx = canvas.getContext('2d')
 
   space.onload = function() {
-    // At this point, the image is fully loaded
-    // So do your thing!
-    gameState.backgroundLoaded = true
+    gameState.spaceLoaded = true
   }
 
   ship.onload = function() {
-    // At this point, the image is fully loaded
-    // So do your thing!
     gameState.shipLoaded = true
   }
   gameObjects.space = space
