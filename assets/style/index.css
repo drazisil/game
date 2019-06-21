@@ -35,6 +35,33 @@
     visibility: hidden;
 }
 
+#loseScreen {
+    opacity: 0.3;
+    padding-left: 3em;
+    padding-top: 3em;
+    color: aliceblue;
+    width: 800px;
+    height: 600px;
+    background-color: black;
+    top: 0px;
+    position: fixed;
+    visibility: hidden;
+
+}
+
+#loseScreen div { 
+    text-align: center;
+    margin: auto;
+    width: 50%;
+
+}
+
+#loseScreen img {
+    width: 200px;
+    left: 400px;
+    margin: auto;
+}
+
 #winScreen {
     padding-left: 3em;
     padding-top: 3em;

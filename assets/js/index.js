@@ -1,3 +1,16 @@
+
+class GameObject {
+  constructor(name, data, x, y, isHidden, width, height) {
+    this.name = name
+    this.data = data
+    this.x = x
+    this.y = y
+    this.hidden = isHidden
+    this.width = width
+    this.height = height
+  }
+}
+
 class Missile {
   constructor (x, y, height, source) {
     this.x = x
@@ -248,23 +261,45 @@ class Game {
   isBetween(number, first, second) {
     return (number >= first) && (number <= second)
   }
+
+  checkHitEnemy(missile) {
+    if (((missile.y - missile.height) <= enemy.y) && this.isBetween(missile.x, enemy.x, (enemy.x + enemy.width))) {
+      enemy.hidden = true
+      return
+    }
+  }
   
+  checkHitShip(missile) {
+    const { ship } = this.gameObjects
+    if (((missile.y - missile.height) >= ship.y) && this.isBetween(missile.x, ship.x, (ship.x + ship.width))) {
+      ship.hidden = true
+      return
+    }
+  }
+
   checkHit() {
-    this.gameObjects.enemies.map((enemy) => {
+    const { ship, enemies } = this.gameObjects
+    enemies.map((enemy) => {
       this.gameState.missiles.map((missile) => {
-        if (enemy.source === 'ship' && ((missile.y - missile.height) <= enemy.y) && this.isBetween(missile.x, enemy.x, (enemy.x + enemy.width))) {
-          enemy.hidden = true
-          return
+        if (missile.source === 'ship') {
+          this.checkHitEnemy(missile)
+        }
+        if (missile.source === 'enemy') {
+          this.checkHitShip(missile)
         }
       })
     })
   
-    const remainingEnemies = this.gameObjects.enemies.filter((enemy) => {
+    const remainingEnemies = enemies.filter((enemy) => {
       return !enemy.hidden
     })
   
     if (remainingEnemies.length === 0) {
       document.getElementById('winScreen').style.visibility = 'visible'
+    }
+
+    if (ship.hidden === true) {
+      document.getElementById('loseScreen').style.visibility = 'visible'
     }
   }
   
@@ -322,26 +357,28 @@ class Game {
     }
   
     ship.addEventListener('load', function() {
-      game.gameObjects.ship = { 
-        data: ship, 
-        x: game.gameConfig.defaultShipLocation.x, 
-        y: game.gameConfig.defaultShipLocation.y,
-        width: ship.width / 2,
-        height: ship.height / 2
-      }
+      game.gameObjects.ship = new GameObject(
+        'ship', 
+        ship, 
+        game.gameConfig.defaultShipLocation.x, 
+        game.gameConfig.defaultShipLocation.y,
+        'false',
+        ship.width / 2,
+        ship.height / 2
+      )
       game.gameState.shipLoaded = true
     })
   
     enemy1.onload = function() {
-      game.gameObjects.enemies.push( { 
-        id: 1,
-        data: enemy1,
-        x: 100,
-        y: 50,
-        hidden: false,
-        width: (enemy1.width / 4),
-        height: (enemy1.height / 4)
-      } )
+      game.gameObjects.enemies.push(new GameObject( 
+        'enemy1',
+        enemy1,
+        100,
+        50,
+        false,
+        (enemy1.width / 4),
+        (enemy1.height / 4)
+      ))
       game.gameState.enemy1Loaded = true
     }
   
