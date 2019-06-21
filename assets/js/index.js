@@ -81,18 +81,17 @@ function moveMissile(missile) {
 // [{ x: number, y: number }]
 
 function drawMissile(missile) {
-  let x = missile.x + gameObjects.ship.width / 4
   const { ctx } = gameState
   ctx.strokeStyle = 'red'
   ctx.beginPath()
-  ctx.moveTo(x, missile.y) // Move the pen to (30, 50)
-  ctx.lineTo(x, missile.y - missile.height) // Draw a line to (150, 100)
+  ctx.moveTo(missile.x, missile.y) // Move the pen to (30, 50)
+  ctx.lineTo(missile.x, missile.y - missile.height) // Draw a line to (150, 100)
   ctx.lineWidth = 2
   ctx.stroke()
 }
 
 function moveUp() {
-  if ((gameObjects.ship.y - gameConfig.movementUnit) < 0) {
+  if ((gameObjects.ship.y - gameConfig.movementUnit) < (gameState.ctx.canvas.height - (gameState.ctx.canvas.height / 2))) {
     return
   }
   gameObjects.ship.y = gameObjects.ship.y - gameConfig.movementUnit
@@ -159,7 +158,7 @@ function handleKeys() {
   }
 
   if (gameState.keys['Space']) {
-    addMissile(gameObjects.ship.x, gameObjects.ship.y)
+    addMissile(gameObjects.ship.x + (gameObjects.ship.width / 2), gameObjects.ship.y)
   }
 
   if (gameState.keys['Escape']) {
