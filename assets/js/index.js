@@ -5,6 +5,7 @@ const gameConfig = {
   movementUnit: 5,
   width: 800,
   height: 600,
+  missileInterval: 20
 }
 const gameState = {
   loaded: false,
@@ -14,6 +15,7 @@ const gameState = {
   frameRequest: 0,
   shipLoaded: false,
   spaceLoaded: false,
+  missileTimer: 60,
   keys: [], // Keys they are currently pressed
 }
 
@@ -29,6 +31,17 @@ function isGameLoaded() {
     return true
   }
   return false
+}
+
+function addMissile(missileX, missileY) {
+  if (gameState.missileTimer >= 0) {
+    return
+  }
+  gameState.missiles.push({
+    x: missileX,
+    y: missileY,
+  })
+  gameState.missileTimer = gameConfig.missileInterval
 }
 
 function removeMissile(missileY) {
@@ -57,7 +70,10 @@ function drawMissile(missile) {
   ctx.stroke()
 }
 
-function moveLeft(params) {}
+function moveLeft() {
+  gameState.shipLocation.x = gameState.shipLocation.x - gameConfig.movementUnit
+  gameState.spaceLocation.x = gameState.spaceLocation.x - gameConfig.movementUnit / 2
+}
 
 function keysPressed(e) {
   console.log(e.code)
@@ -81,27 +97,23 @@ function handleKeys() {
   const { movementUnit } = gameConfig
 
   if (gameState.keys['ArrowRight']) {
-    gameState.shipLocation.x = gameState.shipLocation.x + movementUnit
-    gameState.spaceLocation.x = gameState.spaceLocation.x + movementUnit / 2
+    gameState.shipLocation.x = gameState.shipLocation.x + gameConfig.movementUnit
+    gameState.spaceLocation.x = gameState.spaceLocation.x + gameConfig.movementUnit / 2
   }
   if (gameState.keys['ArrowLeft']) {
-    gameState.shipLocation.x = gameState.shipLocation.x - movementUnit
-    gameState.spaceLocation.x = gameState.spaceLocation.x - movementUnit / 2
+    moveLeft()
   }
   if (gameState.keys['ArrowUp']) {
-    gameState.shipLocation.y = gameState.shipLocation.y - movementUnit
-    gameState.spaceLocation.y = gameState.spaceLocation.y - movementUnit / 2
+    gameState.shipLocation.y = gameState.shipLocation.y - gameConfig.movementUnit
+    gameState.spaceLocation.y = gameState.spaceLocation.y - gameConfig.movementUnit / 2
   }
   if (gameState.keys['ArrowDown']) {
-    gameState.shipLocation.y = gameState.shipLocation.y + movementUnit
-    gameState.spaceLocation.y = gameState.spaceLocation.y + movementUnit / 2
+    gameState.shipLocation.y = gameState.shipLocation.y + gameConfig.movementUnit
+    gameState.spaceLocation.y = gameState.spaceLocation.y + gameConfig.movementUnit / 2
   }
 
   if (gameState.keys['Space']) {
-    gameState.missiles.push({
-      x: gameState.shipLocation.x,
-      y: gameState.shipLocation.y,
-    })
+    addMissile(gameState.shipLocation.x, gameState.shipLocation.y)
   }
 }
 
@@ -144,6 +156,7 @@ function run() {
   gameState.missiles.forEach(missile => {
     drawMissile(missile)
   })
+  gameState.missileTimer--
   gameState.frameRequest = window.requestAnimationFrame(run)
 }
 
