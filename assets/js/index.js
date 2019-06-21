@@ -1,15 +1,19 @@
 let containerId = 'game'
 
-const gameObjects = {}
+const gameObjects = {
+  enemies: []
+}
 const gameConfig = {
   movementUnit: 5,
   width: 800,
   height: 600,
-  missileInterval: 20
+  missileInterval: 20,
+  missileLength: 20,
+  defaultShipLocation: { x: 100, y: 400 },
+  defaultSpaceLocation: { x: -1000, y: -1000 },
 }
 const gameState = {
   loaded: false,
-  shipLocation: { x: 100, y: 100 },
   spaceLocation: { x: -500, y: -500 },
   missiles: [], // All missiles in game
   frameRequest: 0,
@@ -19,13 +23,25 @@ const gameState = {
   keys: [], // Keys they are currently pressed
 }
 
+function areEnimiesLoaded() {
+  return gameState.enemy1Loaded
+}
+
+function resetGame() {
+  gameObjects.ship.x = gameConfig.defaultShipLocation.x
+  gameObjects.ship.y = gameConfig.defaultShipLocation.y
+
+  gameState.spaceLocation.x = gameConfig.defaultSpaceLocation.x
+  gameState.spaceLocation.y = gameConfig.defaultSpaceLocation.y
+}
+
 function isGameLoaded() {
   if (gameObjects === {}) {
     console.error(`Empty gameObject in gameLoop`)
     gameState.frameRequest = window.requestAnimationFrame(run)
     return false
   }
-  if (gameState.spaceLoaded && gameState.shipLoaded) {
+  if (gameState.spaceLoaded && gameState.shipLoaded && areEnimiesLoaded() ) {
     document.getElementById('loadingScreen').style.visibility = 'hidden'
     gameState.loaded = true
     return true
@@ -40,6 +56,7 @@ function addMissile(missileX, missileY) {
   gameState.missiles.push({
     x: missileX,
     y: missileY,
+    height: gameConfig.missileLength
   })
   gameState.missileTimer = gameConfig.missileInterval
 }
@@ -65,24 +82,52 @@ function drawMissile(missile) {
   ctx.strokeStyle = 'red'
   ctx.beginPath()
   ctx.moveTo(x, missile.y) // Move the pen to (30, 50)
-  ctx.lineTo(x, missile.y - 20) // Draw a line to (150, 100)
+  ctx.lineTo(x, missile.y - missile.height) // Draw a line to (150, 100)
   ctx.lineWidth = 2
   ctx.stroke()
 }
 
+function moveUp() {
+  if ((gameObjects.ship.y - gameConfig.movementUnit) < 0) {
+    return
+  }
+  gameObjects.ship.y = gameObjects.ship.y - gameConfig.movementUnit
+  gameState.spaceLocation.y = gameState.spaceLocation.y - gameConfig.movementUnit / 2
+}
+
+function moveDown() {
+  if (((gameObjects.ship.y + gameObjects.ship.height) + gameConfig.movementUnit) > gameState.ctx.canvas.height) {
+    return
+  }
+  gameObjects.ship.y = gameObjects.ship.y + gameConfig.movementUnit
+  gameState.spaceLocation.y = gameState.spaceLocation.y + gameConfig.movementUnit / 2
+}
+
+
 function moveLeft() {
-  gameState.shipLocation.x = gameState.shipLocation.x - gameConfig.movementUnit
+  if ((gameObjects.ship.x - gameConfig.movementUnit) < 0) {
+    return
+  }
+  gameObjects.ship.x = gameObjects.ship.x - gameConfig.movementUnit
   gameState.spaceLocation.x = gameState.spaceLocation.x - gameConfig.movementUnit / 2
 }
 
+function moveRight() {
+  if (((gameObjects.ship.x + gameObjects.ship.width) + gameConfig.movementUnit) > gameState.ctx.canvas.width) {
+    return
+  }
+  gameObjects.ship.x = gameObjects.ship.x + gameConfig.movementUnit
+  gameState.spaceLocation.x = gameState.spaceLocation.x + gameConfig.movementUnit / 2
+}
+
 function keysPressed(e) {
-  console.log(e.code)
   switch (e.code) {
     case 'ArrowUp':
     case 'ArrowDown':
     case 'ArrowLeft':
     case 'ArrowRight':
     case 'Space':
+    case 'Escape':
       e.preventDefault()
       break
   }
@@ -97,23 +142,26 @@ function handleKeys() {
   const { movementUnit } = gameConfig
 
   if (gameState.keys['ArrowRight']) {
-    gameState.shipLocation.x = gameState.shipLocation.x + gameConfig.movementUnit
-    gameState.spaceLocation.x = gameState.spaceLocation.x + gameConfig.movementUnit / 2
+    moveRight()
   }
   if (gameState.keys['ArrowLeft']) {
     moveLeft()
   }
   if (gameState.keys['ArrowUp']) {
-    gameState.shipLocation.y = gameState.shipLocation.y - gameConfig.movementUnit
-    gameState.spaceLocation.y = gameState.spaceLocation.y - gameConfig.movementUnit / 2
+    moveUp()
   }
   if (gameState.keys['ArrowDown']) {
-    gameState.shipLocation.y = gameState.shipLocation.y + gameConfig.movementUnit
-    gameState.spaceLocation.y = gameState.spaceLocation.y + gameConfig.movementUnit / 2
+    moveDown()
   }
 
   if (gameState.keys['Space']) {
-    addMissile(gameState.shipLocation.x, gameState.shipLocation.y)
+    addMissile(gameObjects.ship.x, gameObjects.ship.y)
+  }
+
+  if (gameState.keys['Escape']) {
+    console.log(`Resetting`)
+    gameState.keys['Escape'] = false
+    resetGame()
   }
 }
 
@@ -129,15 +177,39 @@ function drawSpace() {
   )
 }
 
+function drawEnemy(enemy) {
+  if (enemy.hidden) {
+    return
+  }
+  const { ctx } = gameState
+  ctx.drawImage(
+    enemy.data,
+    enemy.x,
+    enemy.y,
+    enemy.width,
+    enemy.height
+  )
+}
+
 function drawShip() {
   const { ctx } = gameState
   ctx.drawImage(
-    gameObjects.ship,
-    gameState.shipLocation.x,
-    gameState.shipLocation.y,
-    gameObjects.ship.width / 2,
-    gameObjects.ship.height / 2
+    gameObjects.ship.data,
+    gameObjects.ship.x,
+    gameObjects.ship.y,
+    gameObjects.ship.width,
+    gameObjects.ship.height
   )
+}
+
+function checkHit() {
+  gameObjects.enemies.map((enemy) => {
+    gameState.missiles.map((missile) => {
+      if ((missile.y - missile.height) <= enemy.y) {
+        enemy.hidden = true
+      }
+    })
+  })
 }
 
 function run() {
@@ -149,10 +221,14 @@ function run() {
   handleKeys()
   drawSpace()
   drawShip()
+  drawEnemy(gameObjects.enemies[0])
 
   gameState.missiles.forEach(missile => {
     moveMissile(missile)
   })
+
+  checkHit()
+
   gameState.missiles.forEach(missile => {
     drawMissile(missile)
   })
@@ -166,6 +242,7 @@ function init() {
 
   const ship = document.images[0]
   const space = document.images[2]
+  const enemy1 = document.images[3]
 
   let body = document.getElementById(containerId)
   let canvas = document.createElement('canvas')
@@ -181,10 +258,33 @@ function init() {
   }
 
   ship.onload = function() {
+    gameObjects.ship = { 
+      data: ship, 
+      x: gameConfig.defaultShipLocation.x, 
+      y: gameConfig.defaultShipLocation.y,
+      width: ship.width / 2,
+      height: ship.height / 2
+    }
     gameState.shipLoaded = true
   }
+
+  enemy1.onload = function() {
+    gameObjects.enemies.push( { 
+      id: 1,
+      data: enemy1,
+      x: 100,
+      y: 50,
+      hidden: false,
+      width: (enemy1.width / 4),
+      height: (enemy1.height / 4)
+    } )
+    gameState.enemy1Loaded = true
+  }
+
+
   gameObjects.space = space
-  gameObjects.ship = ship
+  
+  
   gameState.frameRequest = window.requestAnimationFrame(run)
 }
 
