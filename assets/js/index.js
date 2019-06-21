@@ -33,7 +33,10 @@ function resetGame() {
 
   gameState.spaceLocation.x = gameConfig.defaultSpaceLocation.x
   gameState.spaceLocation.y = gameConfig.defaultSpaceLocation.y
-  document.getElementById('winScreen').style.visibility = 'visible'
+  gameObjects.enemies.map((enemy) => {
+        enemy.hidden = false
+  })
+  document.getElementById('winScreen').style.visibility = 'hidden'
 }
 
 function isGameLoaded() {
@@ -160,7 +163,6 @@ function handleKeys() {
   }
 
   if (gameState.keys['Escape']) {
-    console.log(`Resetting`)
     gameState.keys['Escape'] = false
     resetGame()
   }
@@ -203,14 +205,27 @@ function drawShip() {
   )
 }
 
+function isBetween(number, first, second) {
+  return (number >= first) && (number <= second)
+}
+
 function checkHit() {
   gameObjects.enemies.map((enemy) => {
     gameState.missiles.map((missile) => {
-      if ((missile.y - missile.height) <= enemy.y) {
+      if (((missile.y - missile.height) <= enemy.y) && isBetween(missile.x, enemy.x, (enemy.x + enemy.width))) {
         enemy.hidden = true
+        return
       }
     })
   })
+
+  const remainingEnemies = gameObjects.enemies.filter((enemy) => {
+    return !enemy.hidden
+  })
+
+  if (remainingEnemies.length === 0) {
+    document.getElementById('winScreen').style.visibility = 'visible'
+  }
 }
 
 function run() {
@@ -258,7 +273,7 @@ function init() {
     gameState.spaceLoaded = true
   }
 
-  ship.onload = function() {
+  ship.addEventListener('load', function() {
     gameObjects.ship = { 
       data: ship, 
       x: gameConfig.defaultShipLocation.x, 
@@ -267,7 +282,7 @@ function init() {
       height: ship.height / 2
     }
     gameState.shipLoaded = true
-  }
+  })
 
   enemy1.onload = function() {
     gameObjects.enemies.push( { 
