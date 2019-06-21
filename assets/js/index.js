@@ -1,3 +1,12 @@
+class Missile {
+  constructor (x, y, height, source) {
+    this.x = x
+    this.y = y
+    this.height = height
+    this.source = source
+  }
+}
+
 class Game {
   constructor() {
     this.containerId = 'game'
@@ -9,7 +18,8 @@ class Game {
       movementUnit: 5,
       width: 800,
       height: 600,
-      missileInterval: 20,
+      enemyMissileInterval: 60,
+      shipMissileInterval: 20,
       missileLength: 20,
       defaultShipLocation: { x: 100, y: 400 },
       defaultSpaceLocation: { x: -1000, y: -1000 },
@@ -21,7 +31,8 @@ class Game {
       frameRequest: 0,
       shipLoaded: false,
       spaceLoaded: false,
-      missileTimer: 60,
+      enemyMissileTimer: 60,
+      shipMissileTimer: 60,
       keys: [], // Keys they are currently pressed
     }
   
@@ -57,16 +68,20 @@ class Game {
     return false
   }
   
-  addMissile(missileX, missileY) {
-    if (this.gameState.missileTimer >= 0) {
+  addMissile(missileX, missileY, source) {
+    if (source === 'ship' && this.gameState.shipMissileTimer >= 0) {
       return
     }
-    this.gameState.missiles.push({
-      x: missileX,
-      y: missileY,
-      height: this.gameConfig.missileLength
-    })
-    this.gameState.missileTimer = this.gameConfig.missileInterval
+    if (source === 'enemy' && this.gameState.enemyMissileTimer >= 0) {
+      return
+    }
+    this.gameState.missiles.push(new Missile(
+      missileX, 
+      missileY, 
+      this.gameConfig.missileLength, 
+      source))
+    this.gameState.shipMissileTimer = this.gameConfig.shipMissileInterval
+    this.gameState.enemyMissileTimer = this.gameConfig.enemyMissileInterval
   }
   
   removeMissile(missileY) {
@@ -75,18 +90,40 @@ class Game {
     })
   }
   
-  moveMissile(missile) {
+  moveMissileUp(missile) {
     if (missile.y <= 0) {
       this.removeMissile(missile.y)
     }
     missile.y = missile.y - 5
+  }
+
+  moveMissileDown(missile) {
+    if (missile.y >= this.gameState.ctx.canvas.height) {
+      this.removeMissile(missile.y)
+    }
+    missile.y = missile.y + 5
+  }
+  
+  moveMissile(missile) {
+    if (missile.source === 'ship') {
+      this.moveMissileUp(missile)
+    }
+    if (missile.source === 'enemy') {
+      this.moveMissileDown(missile)
+    }
   }
   
   // [{ x: number, y: number }]
   
   drawMissile(missile) {
     const { ctx } = this.gameState
-    ctx.strokeStyle = 'red'
+    if (missile.source === 'ship') {
+      ctx.strokeStyle = 'red'
+    }
+    if (missile.source === 'enemy') {
+      ctx.strokeStyle = 'blue'
+    }
+
     ctx.beginPath()
     ctx.moveTo(missile.x, missile.y) // Move the pen to (30, 50)
     ctx.lineTo(missile.x, missile.y - missile.height) // Draw a line to (150, 100)
@@ -162,7 +199,7 @@ class Game {
     }
   
     if (this.gameState.keys['Space']) {
-      this.addMissile(this.gameObjects.ship.x + (this.gameObjects.ship.width / 2), this.gameObjects.ship.y)
+      this.addMissile(this.gameObjects.ship.x + (this.gameObjects.ship.width / 2), this.gameObjects.ship.y, 'ship')
     }
   
     if (this.gameState.keys['Escape']) {
@@ -215,7 +252,7 @@ class Game {
   checkHit() {
     this.gameObjects.enemies.map((enemy) => {
       this.gameState.missiles.map((missile) => {
-        if (((missile.y - missile.height) <= enemy.y) && this.isBetween(missile.x, enemy.x, (enemy.x + enemy.width))) {
+        if (enemy.source === 'ship' && ((missile.y - missile.height) <= enemy.y) && this.isBetween(missile.x, enemy.x, (enemy.x + enemy.width))) {
           enemy.hidden = true
           return
         }
@@ -241,6 +278,12 @@ class Game {
     this.drawSpace()
     this.drawShip()
     this.drawEnemy(this.gameObjects.enemies[0])
+
+    // Add enemy missiles
+    this.gameObjects.enemies.forEach((enemy) => {
+
+      this.addMissile(enemy.x + (enemy.width / 2), enemy.y + enemy.height + this.gameConfig.missileLength, 'enemy')
+    })
   
     this.gameState.missiles.forEach(missile => {
       this.moveMissile(missile)
@@ -251,7 +294,8 @@ class Game {
     this.gameState.missiles.forEach(missile => {
       this.drawMissile(missile)
     })
-    this.gameState.missileTimer--
+    this.gameState.enemyMissileTimer--
+    this.gameState.shipMissileTimer--
     this.gameState.frameRequest = window.requestAnimationFrame(this.run.bind(this))
   }
   
