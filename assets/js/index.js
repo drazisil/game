@@ -10,11 +10,11 @@ const gameState = {
   loaded: false,
   shipLocation: { x: 100, y: 100 },
   spaceLocation: { x: -500, y: -500 },
-  missiles: [],
+  missiles: [], // All missiles in game
   frameRequest: 0,
   shipLoaded: false,
   spaceLoaded: false,
-  keys: [],
+  keys: [], // Keys they are currently pressed
 }
 
 function isGameLoaded() {
@@ -31,14 +31,15 @@ function isGameLoaded() {
   return false
 }
 
-function removeMissile(missile) {
+function removeMissile(missileY) {
   gameState.missiles = gameState.missiles.filter(missile => {
-    return missile.x !== gameState.shipLocation.x
+    return missile.y !== missileY
   })
 }
 
 function moveMissile(missile) {
   if (missile.y <= 0) {
+    removeMissile(missile.y)
   }
   missile.y = missile.y - 5
 }
