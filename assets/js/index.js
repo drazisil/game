@@ -33,6 +33,7 @@ function resetGame() {
 
   gameState.spaceLocation.x = gameConfig.defaultSpaceLocation.x
   gameState.spaceLocation.y = gameConfig.defaultSpaceLocation.y
+  document.getElementById('winScreen').style.visibility = 'visible'
 }
 
 function isGameLoaded() {
