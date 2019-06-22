@@ -42,8 +42,6 @@ class Game {
       missiles: [], // All missiles in game
       frameRequest: 0,
       isRunning: false,
-      shipLoaded: false,
-      spaceLoaded: false,
       enemyMissileTimer: 60,
       shipMissileTimer: 60,
       keys: [], // Keys they are currently pressed
