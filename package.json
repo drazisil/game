@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "cypress:open": "cypress open",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -19,6 +20,7 @@
   "homepage": "https://github.com/drazisil/game#readme",
   "dependencies": {},
   "devDependencies": {
+    "cypress": "^3.3.1",
     "eslint": "^5.16.0",
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-config-prettier": "^5.0.0",
@@ -33,7 +35,9 @@
       "es6": true,
       "node": true
     },
-    "extends": ["plugin:prettier/recommended"],
+    "extends": [
+      "plugin:prettier/recommended"
+    ],
     "globals": {
       "Atomics": "readonly",
       "SharedArrayBuffer": "readonly"
@@ -43,5 +47,5 @@
       "sourceType": "module"
     },
     "rules": {}
-  }  
+  }
 }
