@@ -1,31 +1,31 @@
 class GameObject {
   constructor(name, data, x, y, isHidden, width, height) {
-    this.name = name
-    this.data = data
-    this.x = x
-    this.y = y
-    this.hidden = isHidden
-    this.width = width
-    this.height = height
+    this.name = name;
+    this.data = data;
+    this.x = x;
+    this.y = y;
+    this.hidden = isHidden;
+    this.width = width;
+    this.height = height;
   }
 }
 
 class Missile {
   constructor(x, y, height, source) {
-    this.x = x
-    this.y = y
-    this.height = height
-    this.source = source
+    this.x = x;
+    this.y = y;
+    this.height = height;
+    this.source = source;
   }
 }
 
 class Game {
   constructor() {
-    this.containerId = 'game'
+    this.containerId = 'game';
 
     this.gameObjects = {
       enemies: [],
-    }
+    };
     this.gameConfig = {
       movementUnit: 5,
       width: 800,
@@ -35,7 +35,7 @@ class Game {
       missileLength: 20,
       defaultShipLocation: { x: 100, y: 400 },
       defaultSpaceLocation: { x: -1000, y: -1000 },
-    }
+    };
     this.gameState = {
       loaded: false,
       spaceLocation: { x: -500, y: -500 },
@@ -45,165 +45,155 @@ class Game {
       enemyMissileTimer: 60,
       shipMissileTimer: 60,
       keys: [], // Keys they are currently pressed
-    }
+    };
   }
 
   areEnemiesLoaded() {
-    return this.gameState.enemy1Loaded
+    return this.gameState.enemy1Loaded;
   }
 
   resetGame() {
-    const { enemies, ship } = this.gameObjects
-    ship.x = this.gameConfig.defaultShipLocation.x
-    ship.y = this.gameConfig.defaultShipLocation.y
+    const { enemies, ship } = this.gameObjects;
+    ship.x = this.gameConfig.defaultShipLocation.x;
+    ship.y = this.gameConfig.defaultShipLocation.y;
 
-    this.gameState.spaceLocation.x = this.gameConfig.defaultSpaceLocation.x
-    this.gameState.spaceLocation.y = this.gameConfig.defaultSpaceLocation.y
-    enemies.map(enemy => {
-      enemy.hidden = false
-    })
-    document.getElementById('winScreen').style.visibility = 'hidden'
-    this.gameState.missiles = []
-    ship.hidden = false
-    document.getElementById('loseScreen').style.visibility = 'hidden'
-    document.getElementById('newGameScreen').style.visibility = 'visible'
+    this.gameState.spaceLocation.x = this.gameConfig.defaultSpaceLocation.x;
+    this.gameState.spaceLocation.y = this.gameConfig.defaultSpaceLocation.y;
+    enemies.map((enemy) => {
+      enemy.hidden = false;
+    });
+    document.getElementById('winScreen').style.visibility = 'hidden';
+    this.gameState.missiles = [];
+    ship.hidden = false;
+    document.getElementById('loseScreen').style.visibility = 'hidden';
+    document.getElementById('newGameScreen').style.visibility = 'visible';
   }
 
   isGameLoaded() {
     if (this.gameObjects === {}) {
-      console.error(`Empty gameObject in gameLoop`)
-      this.gameState.frameRequest = window.requestAnimationFrame(run)
-      return false
+      console.error('Empty gameObject in gameLoop');
+      this.gameState.frameRequest = window.requestAnimationFrame(run);
+      return false;
     }
     if (
-      this.gameState.spaceLoaded &&
-      this.gameState.shipLoaded &&
-      this.areEnemiesLoaded()
+      this.gameState.spaceLoaded
+      && this.gameState.shipLoaded
+      && this.areEnemiesLoaded()
     ) {
-      document.getElementById('loadingScreen').style.visibility = 'hidden'
-      this.gameState.loaded = true
+      document.getElementById('loadingScreen').style.visibility = 'hidden';
+      this.gameState.loaded = true;
       // this.gameState.isRunning = true
-      return true
+      return true;
     }
-    return false
+    return false;
   }
 
   addMissile(missileX, missileY, source) {
-    const { shipMissileTimer, missiles, isRunning } = this.gameState
+    const { shipMissileTimer, missiles, isRunning } = this.gameState;
     if (!isRunning) {
-      return
+      return;
     }
     if (source === 'ship' && this.gameState.shipMissileTimer >= 0) {
-      return
+      return;
     }
     if (source === 'enemy' && this.gameState.enemyMissileTimer >= 0) {
-      return
+      return;
     }
     this.gameState.missiles.push(
-      new Missile(missileX, missileY, this.gameConfig.missileLength, source)
-    )
-    this.gameState.shipMissileTimer = this.gameConfig.shipMissileInterval
-    this.gameState.enemyMissileTimer = this.gameConfig.enemyMissileInterval
+      new Missile(missileX, missileY, this.gameConfig.missileLength, source),
+    );
+    this.gameState.shipMissileTimer = this.gameConfig.shipMissileInterval;
+    this.gameState.enemyMissileTimer = this.gameConfig.enemyMissileInterval;
   }
 
   removeMissile(missileY) {
-    this.gameState.missiles = this.gameState.missiles.filter(missile => {
-      return missile.y !== missileY
-    })
+    this.gameState.missiles = this.gameState.missiles.filter(missile => missile.y !== missileY);
   }
 
   moveMissileUp(missile) {
     if (missile.y <= 0) {
-      this.removeMissile(missile.y)
+      this.removeMissile(missile.y);
     }
-    missile.y = missile.y - 5
+    missile.y -= 5;
   }
 
   moveMissileDown(missile) {
     if (missile.y >= this.gameState.ctx.canvas.height) {
-      this.removeMissile(missile.y)
+      this.removeMissile(missile.y);
     }
-    missile.y = missile.y + 5
+    missile.y += 5;
   }
 
   moveMissile(missile) {
     if (missile.source === 'ship') {
-      this.moveMissileUp(missile)
+      this.moveMissileUp(missile);
     }
     if (missile.source === 'enemy') {
-      this.moveMissileDown(missile)
+      this.moveMissileDown(missile);
     }
   }
 
   // [{ x: number, y: number }]
 
   drawMissile(missile) {
-    const { ctx } = this.gameState
+    const { ctx } = this.gameState;
     if (missile.source === 'ship') {
-      ctx.strokeStyle = 'red'
+      ctx.strokeStyle = 'red';
     }
     if (missile.source === 'enemy') {
-      ctx.strokeStyle = 'blue'
+      ctx.strokeStyle = 'blue';
     }
 
-    ctx.beginPath()
-    ctx.moveTo(missile.x, missile.y) // Move the pen to (30, 50)
-    ctx.lineTo(missile.x, missile.y - missile.height) // Draw a line to (150, 100)
-    ctx.lineWidth = 2
-    ctx.stroke()
+    ctx.beginPath();
+    ctx.moveTo(missile.x, missile.y); // Move the pen to (30, 50)
+    ctx.lineTo(missile.x, missile.y - missile.height); // Draw a line to (150, 100)
+    ctx.lineWidth = 2;
+    ctx.stroke();
   }
 
   moveUp() {
     if (
-      this.gameObjects.ship.y - this.gameConfig.movementUnit <
-      this.gameState.ctx.canvas.height - this.gameState.ctx.canvas.height / 2
-    ) {
-      return
-    }
-    this.gameObjects.ship.y =
       this.gameObjects.ship.y - this.gameConfig.movementUnit
-    this.gameState.spaceLocation.y =
-      this.gameState.spaceLocation.y - this.gameConfig.movementUnit / 2
+      < this.gameState.ctx.canvas.height - this.gameState.ctx.canvas.height / 2
+    ) {
+      return;
+    }
+    this.gameObjects.ship.y = this.gameObjects.ship.y - this.gameConfig.movementUnit;
+    this.gameState.spaceLocation.y = this.gameState.spaceLocation.y - this.gameConfig.movementUnit / 2;
   }
 
   moveDown() {
     if (
-      this.gameObjects.ship.y +
-        this.gameObjects.ship.height +
-        this.gameConfig.movementUnit >
-      this.gameState.ctx.canvas.height
+      this.gameObjects.ship.y
+        + this.gameObjects.ship.height
+        + this.gameConfig.movementUnit
+      > this.gameState.ctx.canvas.height
     ) {
-      return
+      return;
     }
-    this.gameObjects.ship.y =
-      this.gameObjects.ship.y + this.gameConfig.movementUnit
-    this.gameState.spaceLocation.y =
-      this.gameState.spaceLocation.y + this.gameConfig.movementUnit / 2
+    this.gameObjects.ship.y = this.gameObjects.ship.y + this.gameConfig.movementUnit;
+    this.gameState.spaceLocation.y = this.gameState.spaceLocation.y + this.gameConfig.movementUnit / 2;
   }
 
   moveLeft() {
     if (this.gameObjects.ship.x - this.gameConfig.movementUnit < 0) {
-      return
+      return;
     }
-    this.gameObjects.ship.x =
-      this.gameObjects.ship.x - this.gameConfig.movementUnit
-    this.gameState.spaceLocation.x =
-      this.gameState.spaceLocation.x - this.gameConfig.movementUnit / 2
+    this.gameObjects.ship.x = this.gameObjects.ship.x - this.gameConfig.movementUnit;
+    this.gameState.spaceLocation.x = this.gameState.spaceLocation.x - this.gameConfig.movementUnit / 2;
   }
 
   moveRight() {
     if (
-      this.gameObjects.ship.x +
-        this.gameObjects.ship.width +
-        this.gameConfig.movementUnit >
-      this.gameState.ctx.canvas.width
+      this.gameObjects.ship.x
+        + this.gameObjects.ship.width
+        + this.gameConfig.movementUnit
+      > this.gameState.ctx.canvas.width
     ) {
-      return
+      return;
     }
-    this.gameObjects.ship.x =
-      this.gameObjects.ship.x + this.gameConfig.movementUnit
-    this.gameState.spaceLocation.x =
-      this.gameState.spaceLocation.x + this.gameConfig.movementUnit / 2
+    this.gameObjects.ship.x = this.gameObjects.ship.x + this.gameConfig.movementUnit;
+    this.gameState.spaceLocation.x = this.gameState.spaceLocation.x + this.gameConfig.movementUnit / 2;
   }
 
   keysPressed(e) {
@@ -215,220 +205,216 @@ class Game {
       case 'Space':
       case 'Escape':
       case 'Enter':
-        e.preventDefault()
-        break
+        e.preventDefault();
+        break;
     }
-    this.gameState.keys[e.code] = true
+    this.gameState.keys[e.code] = true;
   }
 
   keysReleased(e) {
-    this.gameState.keys[e.code] = false
+    this.gameState.keys[e.code] = false;
   }
 
   handleKeys() {
-    const { ship } = this.gameObjects
-    const { keys, isRunning } = this.gameState
+    const { ship } = this.gameObjects;
+    const { keys, isRunning } = this.gameState;
 
-    if (keys['ArrowRight']) {
+    if (keys.ArrowRight) {
       if (!isRunning) {
-        return
+        return;
       }
-      this.moveRight()
+      this.moveRight();
     }
-    if (keys['ArrowLeft']) {
+    if (keys.ArrowLeft) {
       if (!isRunning) {
-        return
+        return;
       }
-      this.moveLeft()
+      this.moveLeft();
     }
-    if (keys['ArrowUp']) {
+    if (keys.ArrowUp) {
       if (!isRunning) {
-        return
+        return;
       }
-      this.moveUp()
+      this.moveUp();
     }
-    if (keys['ArrowDown']) {
+    if (keys.ArrowDown) {
       if (!isRunning) {
-        return
+        return;
       }
-      this.moveDown()
-    }
-
-    if (keys['Space']) {
-      if (!isRunning) {
-        return
-      }
-      this.addMissile(ship.x + ship.width / 2, ship.y, 'ship')
+      this.moveDown();
     }
 
-    if (keys['Escape']) {
-      keys['Escape'] = false
-      this.resetGame()
+    if (keys.Space) {
+      if (!isRunning) {
+        return;
+      }
+      this.addMissile(ship.x + ship.width / 2, ship.y, 'ship');
     }
 
-    if (keys['Enter'] || keys['NumpadEnter']) {
-      keys['Enter'] = false
-      keys['NumpadEnter'] = false
+    if (keys.Escape) {
+      keys.Escape = false;
+      this.resetGame();
+    }
+
+    if (keys.Enter || keys.NumpadEnter) {
+      keys.Enter = false;
+      keys.NumpadEnter = false;
       if (this.isGameLoaded()) {
-        document.getElementById('newGameScreen').style.visibility = 'hidden'
-        this.gameState.isRunning = true
+        document.getElementById('newGameScreen').style.visibility = 'hidden';
+        this.gameState.isRunning = true;
       }
     }
   }
 
   drawSpace() {
-    const { ctx } = this.gameState
-    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
+    const { ctx } = this.gameState;
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
     ctx.drawImage(
       this.gameObjects.space,
       this.gameState.spaceLocation.x,
       this.gameState.spaceLocation.y,
       this.gameObjects.space.width / 2,
-      this.gameObjects.space.height / 2
-    )
+      this.gameObjects.space.height / 2,
+    );
   }
 
   drawEnemy(enemy) {
     if (enemy.hidden) {
-      return
+      return;
     }
-    const { ctx } = this.gameState
-    ctx.drawImage(enemy.data, enemy.x, enemy.y, enemy.width, enemy.height)
+    const { ctx } = this.gameState;
+    ctx.drawImage(enemy.data, enemy.x, enemy.y, enemy.width, enemy.height);
   }
 
   drawShip() {
-    const { ctx } = this.gameState
+    const { ctx } = this.gameState;
     ctx.drawImage(
       this.gameObjects.ship.data,
       this.gameObjects.ship.x,
       this.gameObjects.ship.y,
       this.gameObjects.ship.width,
-      this.gameObjects.ship.height
-    )
+      this.gameObjects.ship.height,
+    );
   }
 
   isBetween(number, first, second) {
-    return number >= first && number <= second
+    return number >= first && number <= second;
   }
 
   checkHitEnemy(enemy, missile) {
     if (
-      missile.y - missile.height <= enemy.y &&
-      this.isBetween(missile.x, enemy.x, enemy.x + enemy.width)
+      missile.y - missile.height <= enemy.y
+      && this.isBetween(missile.x, enemy.x, enemy.x + enemy.width)
     ) {
-      enemy.hidden = true
-      return
+      enemy.hidden = true;
     }
   }
 
   checkHitShip(missile) {
-    const { ship } = this.gameObjects
+    const { ship } = this.gameObjects;
     if (
-      missile.y - missile.height >= ship.y &&
-      this.isBetween(missile.x, ship.x, ship.x + ship.width)
+      missile.y - missile.height >= ship.y
+      && this.isBetween(missile.x, ship.x, ship.x + ship.width)
     ) {
-      ship.hidden = true
-      return
+      ship.hidden = true;
     }
   }
 
   checkHit() {
-    const { ship, enemies } = this.gameObjects
-    enemies.map(enemy => {
-      this.gameState.missiles.map(missile => {
+    const { ship, enemies } = this.gameObjects;
+    enemies.map((enemy) => {
+      this.gameState.missiles.map((missile) => {
         if (missile.source === 'ship') {
-          this.checkHitEnemy(enemy, missile)
+          this.checkHitEnemy(enemy, missile);
         }
         if (missile.source === 'enemy') {
-          this.checkHitShip(missile)
+          this.checkHitShip(missile);
         }
-      })
-    })
+      });
+    });
 
-    const remainingEnemies = enemies.filter(enemy => {
-      return !enemy.hidden
-    })
+    const remainingEnemies = enemies.filter(enemy => !enemy.hidden);
 
     if (remainingEnemies.length === 0) {
-      this.gameState.isRunning = false
-      document.getElementById('winScreen').style.visibility = 'visible'
+      this.gameState.isRunning = false;
+      document.getElementById('winScreen').style.visibility = 'visible';
     }
 
     if (ship.hidden === true) {
-      this.gameState.isRunning = false
-      document.getElementById('loseScreen').style.visibility = 'visible'
+      this.gameState.isRunning = false;
+      document.getElementById('loseScreen').style.visibility = 'visible';
     }
   }
 
   updateDebug() {
-    document.getElementById('debugMovementUnit').value = this.gameConfig.movementUnit
+    document.getElementById('debugMovementUnit').value = this.gameConfig.movementUnit;
   }
 
   run() {
     if (!this.isGameLoaded()) {
       this.gameState.frameRequest = window.requestAnimationFrame(
-        this.run.bind(this)
-      )
-      return
+        this.run.bind(this),
+      );
+      return;
     }
 
-    this.updateDebug()
+    this.updateDebug();
 
-    this.handleKeys()
-    this.drawSpace()
-    this.drawShip()
-    this.drawEnemy(this.gameObjects.enemies[0])
+    this.handleKeys();
+    this.drawSpace();
+    this.drawShip();
+    this.drawEnemy(this.gameObjects.enemies[0]);
 
     // Add enemy missiles
     if (this.gameState.isRunning) {
-      this.gameObjects.enemies.forEach(enemy => {
+      this.gameObjects.enemies.forEach((enemy) => {
         this.addMissile(
           enemy.x + enemy.width / 2,
           enemy.y + enemy.height + this.gameConfig.missileLength,
-          'enemy'
-        )
-      })
+          'enemy',
+        );
+      });
     }
 
-    this.gameState.missiles.forEach(missile => {
-      this.moveMissile(missile)
-    })
+    this.gameState.missiles.forEach((missile) => {
+      this.moveMissile(missile);
+    });
 
-    this.checkHit()
+    this.checkHit();
 
-    this.gameState.missiles.forEach(missile => {
-      this.drawMissile(missile)
-    })
-    this.gameState.enemyMissileTimer--
-    this.gameState.shipMissileTimer--
+    this.gameState.missiles.forEach((missile) => {
+      this.drawMissile(missile);
+    });
+    this.gameState.enemyMissileTimer--;
+    this.gameState.shipMissileTimer--;
     this.gameState.frameRequest = window.requestAnimationFrame(
-      this.run.bind(this)
-    )
+      this.run.bind(this),
+    );
   }
 
   init() {
-    const game = this
-    window.addEventListener('keydown', this.keysPressed.bind(this), false)
-    window.addEventListener('keyup', this.keysReleased.bind(this), false)
+    const game = this;
+    window.addEventListener('keydown', this.keysPressed.bind(this), false);
+    window.addEventListener('keyup', this.keysReleased.bind(this), false);
 
-    const ship = document.images[0]
-    const space = document.images[2]
-    const enemy1 = document.images[3]
+    const ship = document.images[0];
+    const space = document.images[2];
+    const enemy1 = document.images[3];
 
-    let body = document.getElementById(this.containerId)
-    let canvas = document.createElement('canvas')
-    canvas.setAttribute('id', 'gameCanvas')
-    canvas.setAttribute('width', 800)
-    canvas.setAttribute('height', 600)
-    body.appendChild(canvas)
+    const body = document.getElementById(this.containerId);
+    const canvas = document.createElement('canvas');
+    canvas.setAttribute('id', 'gameCanvas');
+    canvas.setAttribute('width', 800);
+    canvas.setAttribute('height', 600);
+    body.appendChild(canvas);
 
-    this.gameState.ctx = canvas.getContext('2d')
+    this.gameState.ctx = canvas.getContext('2d');
 
-    space.onload = function() {
-      game.gameState.spaceLoaded = true
-    }
+    space.onload = function () {
+      game.gameState.spaceLoaded = true;
+    };
 
-    ship.addEventListener('load', function() {
+    ship.addEventListener('load', () => {
       game.gameObjects.ship = new GameObject(
         'ship',
         ship,
@@ -436,12 +422,12 @@ class Game {
         game.gameConfig.defaultShipLocation.y,
         'false',
         ship.width / 2,
-        ship.height / 2
-      )
-      game.gameState.shipLoaded = true
-    })
+        ship.height / 2,
+      );
+      game.gameState.shipLoaded = true;
+    });
 
-    enemy1.onload = function() {
+    enemy1.onload = function () {
       game.gameObjects.enemies.push(
         new GameObject(
           'enemy1',
@@ -450,20 +436,20 @@ class Game {
           50,
           false,
           enemy1.width / 4,
-          enemy1.height / 4
-        )
-      )
-      game.gameState.enemy1Loaded = true
-    }
+          enemy1.height / 4,
+        ),
+      );
+      game.gameState.enemy1Loaded = true;
+    };
 
-    this.gameObjects.space = space
+    this.gameObjects.space = space;
 
     this.gameState.frameRequest = window.requestAnimationFrame(
-      game.run.bind(this)
-    )
+      game.run.bind(this),
+    );
   }
 }
 
-const game = new Game()
+const game = new Game();
 
-window.onload = game.init()
+window.onload = game.init();
