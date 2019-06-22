@@ -360,6 +360,10 @@ class Game {
     }
   }
 
+  updateDebug() {
+    document.getElementById('debugMovementUnit').value = this.gameConfig.movementUnit
+  }
+
   run() {
     if (!this.isGameLoaded()) {
       this.gameState.frameRequest = window.requestAnimationFrame(
@@ -367,6 +371,8 @@ class Game {
       )
       return
     }
+
+    this.updateDebug()
 
     this.handleKeys()
     this.drawSpace()

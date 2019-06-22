@@ -116,8 +116,18 @@
     position: fixed;
 }
 
-#instructions {
+#sidebar {
     left: 820px;
+    
     position: fixed;
+
+}
+
+#instructions {
+    margin-bottom: 10px;
+}
+
+#debugSettings {
+    visibility: hidden;
 }
 
