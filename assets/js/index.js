@@ -68,6 +68,7 @@ class Game {
     this.gameState.missiles = []
     ship.hidden = false
     document.getElementById('loseScreen').style.visibility = 'hidden'
+    document.getElementById('newGameScreen').style.visibility = 'visible'
   }
 
   isGameLoaded() {
@@ -271,6 +272,7 @@ class Game {
       keys['Enter'] = false
       keys['NumpadEnter'] = false
       if (this.isGameLoaded()) {
+        document.getElementById('newGameScreen').style.visibility = 'hidden'
         this.gameState.isRunning = true
       }
     }

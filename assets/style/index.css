@@ -1,11 +1,11 @@
 #loadingScreen {
-    padding-left: 3em;
     padding-top: 3em;
     color: aliceblue;
-    width: 800px;
-    height: 600px;
+    width: 400px;
+    height: 100px;
     background-color: black;
-    top: 0px;
+    left: 200px;
+    top: 200px;
     position: fixed;
 
 }
@@ -36,14 +36,13 @@
 }
 
 #loseScreen {
-    opacity: 0.3;
-    padding-left: 3em;
     padding-top: 3em;
     color: aliceblue;
-    width: 800px;
-    height: 600px;
+    width: 400px;
+    height: 100px;
     background-color: black;
-    top: 0px;
+    left: 200px;
+    top: 200px;
     position: fixed;
     visibility: hidden;
 
@@ -63,13 +62,13 @@
 }
 
 #winScreen {
-    padding-left: 3em;
     padding-top: 3em;
     color: aliceblue;
-    width: 800px;
-    height: 600px;
+    width: 400px;
+    height: 100px;
     background-color: black;
-    top: 0px;
+    left: 200px;
+    top: 200px;
     position: fixed;
     visibility: hidden;
 
@@ -86,5 +85,39 @@
     width: 200px;
     left: 400px;
     margin: auto;
+}
+
+#newGameScreen {
+    padding-top: 3em;
+    color: aliceblue;
+    width: 400px;
+    height: 100px;
+    background-color: black;
+    left: 200px;
+    top: 200px;
+    position: fixed;
+
+}
+
+#newGameScreen div { 
+    text-align: center;
+    margin: auto;
+    width: 50%;
+
+}
+
+#newGameScreen img {
+    width: 200px;
+    left: 400px;
+    margin: auto;
+}
+
+#gameContainer {
+    position: fixed;
+}
+
+#instructions {
+    left: 820px;
+    position: fixed;
 }
 

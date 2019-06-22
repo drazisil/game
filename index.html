@@ -14,26 +14,33 @@
       <img src="assets/images/CepheusB_Spitzer_14391.jpg" />
       <img src="assets/images/blueship4.png" />
     </div>
-    <div id="game"></div>
-    <div id="loadingScreen">
-      <div>Loading, please wait...</div>
-      <div><img src="assets/images/Spinner-1s-200px.svg" /></div>
+    <div id="container">
+      <div id="gameContainer">
+        <div id="game"></div>
+        <div id="loadingScreen">
+          <div>Loading, please wait...</div>
+          <div><img src="assets/images/Spinner-1s-200px.svg" /></div>
+        </div>
+        <div id="winScreen">
+          <div>You Win!</div>
+          <div>Press Esc to play again</div>
+        </div>
+        <div id="loseScreen">
+          <div>You Lose!</div>
+          <div>Press Esc to try again</div>
+        </div>
+        <div id="newGameScreen">
+          <div>Welcome!</div>
+          <div>Press Enter to start...</div>
+        </div>
+      </div>
+      <div id="instructions">
+        <div>Enter to start</div>
+        <div>Up, Down, Left, Right Arrows to move</div>
+        <div>Space to fire</div>
+        <div>Esc to reset</div>
+      </div>
     </div>
-    <div id="winScreen">
-      <div>You Win!</div>
-      <div><img src="assets/images/Spinner-1s-200px.svg" /></div>
-    </div>
-    <div id="loseScreen">
-      <div>You Lose!</div>
-      <div><img src="assets/images/Spinner-1s-200px.svg" /></div>
-    </div>
-    <div id="instructions">
-      <div>Enter to start</div>
-      <div>Up, Down, Left, Right Arrows to move</div>
-      <div>Space to fire</div>
-      <div>Esc to reset</div>
-    </div>
-
     <script src="assets/js/index.js"></script>
   </body>
 </html>
