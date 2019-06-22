@@ -37,7 +37,6 @@ class Game {
       defaultSpaceLocation: { x: -1000, y: -1000 }
     };
     this.gameState = {
-      loaded: false,
       spaceLocation: { x: -500, y: -500 },
       missiles: [], // All missiles in game
       frameRequest: 0,
@@ -49,7 +48,7 @@ class Game {
   }
 
   areEnemiesLoaded() {
-    return this.gameState.enemy1Loaded;
+    return this.gameObjects.enemies[0].data.complete;
   }
 
   resetGame() {
@@ -69,6 +68,24 @@ class Game {
     document.getElementById("newGameScreen").style.visibility = "visible";
   }
 
+  resetSizes() {
+    const { ship, enemies } = this.gameObjects;
+
+    if (ship.width === 0) {
+      ship.width = ship.data.width / 2;
+    }
+    if (ship.height === 0) {
+      ship.height = ship.data.height / 2;
+    }
+
+    if (enemies[0].width === 0) {
+      enemies[0].width = enemies[0].data.width / 4;
+    }
+    if (enemies[0].height === 0) {
+      enemies[0].height = enemies[0].data.height / 4;
+    }
+  }
+
   isGameLoaded() {
     if (this.gameObjects === {}) {
       console.error("Empty gameObject in gameLoop");
@@ -76,10 +93,11 @@ class Game {
       return false;
     }
     if (
-      this.gameState.spaceLoaded &&
-      this.gameState.shipLoaded &&
+      this.gameObjects.space.complete &&
+      this.gameObjects.ship.data.complete &&
       this.areEnemiesLoaded()
     ) {
+      this.resetSizes();
       document.getElementById("loadingScreen").style.visibility = "hidden";
       this.gameState.loaded = true;
       // this.gameState.isRunning = true
@@ -298,13 +316,8 @@ class Game {
 
   drawShip() {
     const { ctx } = this.gameState;
-    ctx.drawImage(
-      this.gameObjects.ship.data,
-      this.gameObjects.ship.x,
-      this.gameObjects.ship.y,
-      this.gameObjects.ship.width,
-      this.gameObjects.ship.height
-    );
+    const { ship } = this.gameObjects;
+    ctx.drawImage(ship.data, ship.x, ship.y, ship.width, ship.height);
   }
 
   isBetween(number, first, second) {
@@ -422,37 +435,27 @@ class Game {
 
     this.gameState.ctx = canvas.getContext("2d");
 
-    space.onload = function() {
-      game.gameState.spaceLoaded = true;
-    };
+    game.gameObjects.ship = new GameObject(
+      "ship",
+      ship,
+      game.gameConfig.defaultShipLocation.x,
+      game.gameConfig.defaultShipLocation.y,
+      "false",
+      ship.width / 2,
+      ship.height / 2
+    );
 
-    ship.addEventListener("load", () => {
-      game.gameObjects.ship = new GameObject(
-        "ship",
-        ship,
-        game.gameConfig.defaultShipLocation.x,
-        game.gameConfig.defaultShipLocation.y,
-        "false",
-        ship.width / 2,
-        ship.height / 2
-      );
-      game.gameState.shipLoaded = true;
-    });
-
-    enemy1.onload = function() {
-      game.gameObjects.enemies.push(
-        new GameObject(
-          "enemy1",
-          enemy1,
-          100,
-          50,
-          false,
-          enemy1.width / 4,
-          enemy1.height / 4
-        )
-      );
-      game.gameState.enemy1Loaded = true;
-    };
+    game.gameObjects.enemies.push(
+      new GameObject(
+        "enemy1",
+        enemy1,
+        100,
+        50,
+        false,
+        enemy1.width / 4,
+        enemy1.height / 4
+      )
+    );
 
     this.gameObjects.space = space;
 
