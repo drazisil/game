@@ -352,6 +352,7 @@ class Game {
     })
 
     if (remainingEnemies.length === 0) {
+      this.gameState.isRunning = false
       document.getElementById('winScreen').style.visibility = 'visible'
     }
 
