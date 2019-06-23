@@ -20,6 +20,32 @@ class Missile {
 }
 
 class Game {
+  constructor() {
+    this.containerId = "game";
+
+    this.gameObjects = {
+      enemies: []
+    };
+    this.gameConfig = {
+      movementUnit: 5,
+      width: 800,
+      height: 600,
+      enemyMissileInterval: 120,
+      shipMissileInterval: 20,
+      missileLength: 20,
+      defaultShipLocation: { x: 100, y: 400 },
+      defaultSpaceLocation: { x: -1000, y: -1000 }
+    };
+    this.gameState = {
+      spaceLocation: { x: -500, y: -500 },
+      missiles: [], // All missiles in game
+      frameRequest: 0,
+      isRunning: false,
+      enemyMissileTimer: 60,
+      shipMissileTimer: 60,
+      keys: [] // Keys they are currently pressed
+    };
+  }
   areEnemiesLoaded() {
     return this.gameObjects.enemies[0].data.complete;
   }
@@ -391,31 +417,6 @@ class Game {
   }
 
   init() {
-    this.containerId = "game";
-
-    this.gameObjects = {
-      enemies: []
-    };
-    this.gameConfig = {
-      movementUnit: 5,
-      width: 800,
-      height: 600,
-      enemyMissileInterval: 120,
-      shipMissileInterval: 20,
-      missileLength: 20,
-      defaultShipLocation: { x: 100, y: 400 },
-      defaultSpaceLocation: { x: -1000, y: -1000 }
-    };
-    this.gameState = {
-      spaceLocation: { x: -500, y: -500 },
-      missiles: [], // All missiles in game
-      frameRequest: 0,
-      isRunning: false,
-      enemyMissileTimer: 60,
-      shipMissileTimer: 60,
-      keys: [] // Keys they are currently pressed
-    };
-
     const game = this;
     window.addEventListener("keydown", this.keysPressed.bind(this), false);
     window.addEventListener("keyup", this.keysReleased.bind(this), false);

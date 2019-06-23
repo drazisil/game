@@ -1,5 +1,16 @@
 const { Game } = require("../src/app.js");
 
-test("two plus two is four", () => {
-  expect(2 + 2).toBe(4);
+let game;
+
+beforeEach(() => {
+  game = new Game();
+});
+
+test("ship can move left", () => {
+  game.gameObjects.ship = { x: 42 };
+  game.gameObjects.ship.x = game.gameConfig.defaultShipLocation.x;
+  game.moveLeft();
+  expect(game.gameObjects.ship.x).toEqual(
+    game.gameConfig.defaultShipLocation.x - game.gameConfig.movementUnit
+  );
 });
