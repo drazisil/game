@@ -13,6 +13,7 @@ jobs:
           name: install
           command: npm ci
       - persist_to_workspace:
+          root: .
           paths: 
            - node_modules
       - run: 
@@ -40,6 +41,7 @@ jobs:
           name: Build
           command: npm run build
       - persist_to_workspace:
+          root: .
           paths: 
             - dist
   deploy:
