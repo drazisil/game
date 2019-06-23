@@ -45,10 +45,21 @@ describe("with Game", () => {
       width: 0,
       height: 0
     };
-    game.gameObjects.enemies[0] = { data: { complete: true } };
+    game.gameObjects.enemies[0] = {
+      data: { width: 40, height: 80 },
+      width: 0,
+      height: 0
+    };
+    expect(game.gameObjects.ship.width).toEqual(0);
+    expect(game.gameObjects.ship.height).toEqual(0);
+    expect(game.gameObjects.enemies[0].width).toEqual(0);
+    expect(game.gameObjects.enemies[0].height).toEqual(0);
+
     game.resetSizes();
     expect(game.gameObjects.ship.width).toEqual(20);
     expect(game.gameObjects.ship.height).toEqual(40);
+    expect(game.gameObjects.enemies[0].width).toEqual(10);
+    expect(game.gameObjects.enemies[0].height).toEqual(20);
   });
 
   test("that ship can move up", () => {
