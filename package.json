@@ -57,6 +57,18 @@
     },
     "rules": {}
   },
+  "jest": {
+    "clearMocks": true,
+  
+    "collectCoverage": true,
+  
+    "coverageDirectory": "coverage",
+  
+    "coverageReporters": ["html", "text", "lcov"],
+  
+    "reporters": ["default", "jest-junit"]
+  
+  },
   "jest-junit": {
     "output": "./test_results/jest/junit.xml"
   }
