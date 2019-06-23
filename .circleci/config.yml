@@ -22,4 +22,4 @@ jobs:
           path: coverage
           prefix: coverage
       - store_test_results: 
-          path: test-results.xml
+          path: test_results
