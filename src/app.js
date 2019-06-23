@@ -137,7 +137,7 @@ class Game {
   }
 
   moveMissileDown(missile) {
-    if (missile.y >= this.gameState.ctx.canvas.height) {
+    if (missile.y >= this.gameConfig.height) {
       this.removeMissile(missile.y);
     }
     missile.y += 5;
@@ -295,7 +295,7 @@ class Game {
 
   drawSpace() {
     const { ctx } = this.gameState;
-    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    ctx.clearRect(0, 0, this.gameConfig.width, this.gameConfig.height);
     ctx.drawImage(
       this.gameObjects.space,
       this.gameState.spaceLocation.x,
