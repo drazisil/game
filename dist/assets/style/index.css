@@ -1,0 +1,133 @@
+#loadingScreen {
+    padding-top: 3em;
+    color: aliceblue;
+    width: 400px;
+    height: 100px;
+    background-color: black;
+    left: 200px;
+    top: 200px;
+    position: fixed;
+
+}
+
+#loadingScreen div { 
+    text-align: center;
+    margin: auto;
+    width: 50%;
+
+}
+
+#loadingScreen img {
+    width: 200px;
+    left: 400px;
+    margin: auto;
+}
+
+#sprites {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+    float: left;
+    display: block;
+    height: 0px;
+    width: 0px;
+    overflow: hidden;
+    visibility: hidden;
+}
+
+#loseScreen {
+    padding-top: 3em;
+    color: aliceblue;
+    width: 400px;
+    height: 100px;
+    background-color: black;
+    left: 200px;
+    top: 200px;
+    position: fixed;
+    visibility: hidden;
+
+}
+
+#loseScreen div { 
+    text-align: center;
+    margin: auto;
+    width: 50%;
+
+}
+
+#loseScreen img {
+    width: 200px;
+    left: 400px;
+    margin: auto;
+}
+
+#winScreen {
+    padding-top: 3em;
+    color: aliceblue;
+    width: 400px;
+    height: 100px;
+    background-color: black;
+    left: 200px;
+    top: 200px;
+    position: fixed;
+    visibility: hidden;
+
+}
+
+#winScreen div { 
+    text-align: center;
+    margin: auto;
+    width: 50%;
+
+}
+
+#winScreen img {
+    width: 200px;
+    left: 400px;
+    margin: auto;
+}
+
+#newGameScreen {
+    padding-top: 3em;
+    color: aliceblue;
+    width: 400px;
+    height: 100px;
+    background-color: black;
+    left: 200px;
+    top: 200px;
+    position: fixed;
+
+}
+
+#newGameScreen div { 
+    text-align: center;
+    margin: auto;
+    width: 50%;
+
+}
+
+#newGameScreen img {
+    width: 200px;
+    left: 400px;
+    margin: auto;
+}
+
+#gameContainer {
+    position: fixed;
+}
+
+#sidebar {
+    left: 820px;
+    
+    position: fixed;
+
+}
+
+#instructions {
+    margin-bottom: 10px;
+}
+
+#debugSettings {
+    visibility: hidden;
+}
+
