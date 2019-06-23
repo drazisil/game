@@ -10088,7 +10088,7 @@ class Game {
       this.gameObjects.ship.x +
         this.gameObjects.ship.width +
         this.gameConfig.movementUnit >
-      this.gameState.ctx.canvas.width
+      this.gameConfig.width
     ) {
       return;
     }
