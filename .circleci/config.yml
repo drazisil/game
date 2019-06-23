@@ -13,7 +13,8 @@ jobs:
           name: install
           command: npm ci
       - persist_to_workspace:
-          root: node_modules
+          paths: 
+           - node_modules
       - run: 
           name: test
           command: npm test
@@ -39,7 +40,8 @@ jobs:
           name: Build
           command: npm run build
       - persist_to_workspace:
-          root: dist
+          paths: 
+            - dist
   deploy:
     docker: 
       - image: circleci/node:10.16.0
