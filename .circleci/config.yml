@@ -5,13 +5,15 @@ orbs:
 
 jobs: 
   build: 
-    docker: # run the steps with Docker
+    docker: 
       - image: circleci/node:10.16.0
     steps: 
       - checkout 
       - run:
           name: install
           command: npm ci
+      - persist_to_workspace:
+          root: node_modules
       - run: 
           name: test
           command: npm test
@@ -26,3 +28,34 @@ jobs:
           prefix: coverage
       - store_test_results: 
           path: test_results
+  test:
+    docker: 
+      - image: circleci/node:10.16.0
+    steps: 
+      - checkout
+      - attach_workspace:
+          at: node_modules 
+      - run:
+          name: Build
+          command: npm run build
+      - persist_to_workspace:
+          root: dist
+  deploy:
+    docker: 
+      - image: circleci/node:10.16.0
+    steps: 
+      - checkout 
+      - attach_workspace:
+          at: dist
+
+workflows:
+  version: 2
+  btd:
+    jobs:
+      - build
+      - test:
+          requires:
+            - build
+      - deploy:
+          requires:
+            - test
