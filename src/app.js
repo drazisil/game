@@ -106,21 +106,31 @@ class Game {
   }
 
   addMissile(missileX, missileY, source) {
-    const { shipMissileTimer, missiles, isRunning } = this.gameState;
+    const {
+      shipMissileTimer,
+      enemyMissileTimer,
+      missiles,
+      isRunning
+    } = this.gameState;
+    const {
+      missileLength,
+      shipMissileInterval,
+      enemyMissileInterval
+    } = this.gameConfig;
     if (!isRunning) {
       return;
     }
-    if (source === "ship" && this.gameState.shipMissileTimer >= 0) {
+    if (source === "ship" && shipMissileTimer >= 0) {
       return;
     }
-    if (source === "enemy" && this.gameState.enemyMissileTimer >= 0) {
+    if (source === "enemy" && enemyMissileTimer >= 0) {
       return;
     }
     this.gameState.missiles.push(
-      new Missile(missileX, missileY, this.gameConfig.missileLength, source)
+      new Missile(missileX, missileY, missileLength, source)
     );
-    this.gameState.shipMissileTimer = this.gameConfig.shipMissileInterval;
-    this.gameState.enemyMissileTimer = this.gameConfig.enemyMissileInterval;
+    this.gameState.shipMissileTimer = shipMissileInterval;
+    this.gameState.enemyMissileTimer = enemyMissileInterval;
   }
 
   removeMissile(missileY) {
