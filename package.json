@@ -25,7 +25,6 @@
   "devDependencies": {
     "clean-webpack-plugin": "^3.0.0",
     "copy-webpack-plugin": "^5.0.3",
-    "cypress": "^3.3.1",
     "eslint": "^5.16.0",
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-config-prettier": "^5.0.0",
@@ -59,15 +58,17 @@
   },
   "jest": {
     "clearMocks": true,
-  
     "collectCoverage": true,
-  
     "coverageDirectory": "coverage",
-  
-    "coverageReporters": ["html", "text", "lcov"],
-  
-    "reporters": ["default", "jest-junit"]
-  
+    "coverageReporters": [
+      "html",
+      "text",
+      "lcov"
+    ],
+    "reporters": [
+      "default",
+      "jest-junit"
+    ]
   },
   "jest-junit": {
     "output": "./test_results/jest/junit.xml"
