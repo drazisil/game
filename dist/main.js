@@ -10048,7 +10048,7 @@ class Game {
   moveUp() {
     if (
       this.gameObjects.ship.y - this.gameConfig.movementUnit <
-      this.gameState.ctx.canvas.height - this.gameState.ctx.canvas.height / 2
+      this.gameConfig.height - this.gameConfig.height / 2
     ) {
       return;
     }
@@ -10063,7 +10063,7 @@ class Game {
       this.gameObjects.ship.y +
         this.gameObjects.ship.height +
         this.gameConfig.movementUnit >
-      this.gameState.ctx.canvas.height
+      this.gameConfig.height
     ) {
       return;
     }
