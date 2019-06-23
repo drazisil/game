@@ -4,7 +4,7 @@ orbs:
   codecov: codecov/codecov@1.0.5
 
 jobs: 
-  build: 
+  test: 
     docker: 
       - image: circleci/node:10.16.0
     steps: 
@@ -30,7 +30,7 @@ jobs:
           prefix: coverage
       - store_test_results: 
           path: test_results
-  test:
+  build:
     docker: 
       - image: circleci/node:10.16.0
     steps: 
@@ -44,6 +44,7 @@ jobs:
           root: .
           paths: 
             - dist
+
   deploy:
     docker: 
       - image: circleci/node:10.16.0
@@ -51,15 +52,20 @@ jobs:
       - checkout 
       - attach_workspace:
           at: .
+      - store_artifacts: 
+          path: dist
+          prefix: dist
+
 
 workflows:
   version: 2
-  btd:
+  "Test, Build, Deploy":
     jobs:
-      - build
-      - test:
+      - test
+      - build:
           requires:
-            - build
+            - test
       - deploy:
           requires:
             - test
+            - build
