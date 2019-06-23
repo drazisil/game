@@ -36,7 +36,7 @@ jobs:
     steps: 
       - checkout
       - attach_workspace:
-          at: node_modules 
+          at: . 
       - run:
           name: Build
           command: npm run build
@@ -50,7 +50,7 @@ jobs:
     steps: 
       - checkout 
       - attach_workspace:
-          at: dist
+          at: .
 
 workflows:
   version: 2
